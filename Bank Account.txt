@@ -1,0 +1,113 @@
+Bank Account
+
+Create Database
+
+-- Create the Branch table
+CREATE TABLE branch (
+    branch_name VARCHAR(50) PRIMARY KEY,
+    branch_city VARCHAR(50) NOT NULL,
+    assets_amt DECIMAL(10, 2) NOT NULL
+);
+
+-- Create the Customer table
+CREATE TABLE customer (
+    cust_name VARCHAR(50) PRIMARY KEY,
+    cust_street VARCHAR(100),
+    cust_city VARCHAR(50)
+);
+
+-- Create the Account table
+CREATE TABLE account (
+    Acc_no INT PRIMARY KEY,
+    branch_name VARCHAR(50) REFERENCES branch(branch_name),
+    balance DECIMAL(10, 2) NOT NULL,
+    CHECK (balance >= 0)
+);
+
+-- Create the Depositor table
+CREATE TABLE depositor (
+    cust_name VARCHAR(50) REFERENCES customer(cust_name),
+    acc_no INT REFERENCES account(Acc_no),
+    PRIMARY KEY (cust_name, acc_no)
+);
+
+-- Create the Loan table
+CREATE TABLE loan (
+    Acc_no INT,
+    loan_no INT PRIMARY KEY,
+    branch_name VARCHAR(50) REFERENCES branch(branch_name),
+    amount DECIMAL(10, 2) NOT NULL,
+    CHECK (amount > 0)
+);
+
+-- Create the Borrower table
+CREATE TABLE borrower (
+    cust_name VARCHAR(50) REFERENCES customer(cust_name),
+    loan_no INT REFERENCES loan(loan_no),
+    PRIMARY KEY (cust_name, loan_no)
+);
+
+2. Find the names of all branches in loan relation.
+   SELECT DISTINCT branch_name FROM loan;
+
+3. Find all loan numbers for loans made at Pimpri Branch with loan amount &gt; 12000.
+   SELECT loan_no
+   FROM loan
+   WHERE branch_name = 'Pimpri' AND amount > 12000;
+
+4. Find all customers who have a loan from bank. Find their names, loan_no and loan
+   amount.
+   SELECT c.cust_name, l.loan_no, l.amount
+   FROM customer c
+   JOIN borrower b ON c.cust_name = b.cust_name
+   JOIN loan l ON b.loan_no = l.loan_no;
+
+5. List all customers in alphabetical order who have loan from Akurdi branch.
+   SELECT c.cust_name
+   FROM customer c
+   JOIN borrower b ON c.cust_name = b.cust_name
+   JOIN loan l ON b.loan_no = l.loan_no
+   WHERE l.branch_name = 'Akurdi'
+   ORDER BY c.cust_name;
+
+6. Find all customers who have an account or loan or both at bank.
+   SELECT DISTINCT cust_name
+   FROM (
+    SELECT cust_name FROM account
+    UNION
+    SELECT cust_name FROM borrower
+    ) AS all_customers;
+
+7. Find all customers who have both account and loan at bank.
+   SELECT DISTINCT a.cust_name
+   FROM account a
+   JOIN borrower b ON a.cust_name = b.cust_name;
+
+8. Find average account balance at Pimpri branch.
+   SELECT AVG(balance) AS avg_balance
+   FROM account
+   WHERE branch_name = 'Pimpri';
+
+9. Find the average account balance at each branch
+   SELECT branch_name, AVG(balance) AS avg_balance
+   FROM account
+   GROUP BY branch_name;
+
+10. Find the branches where average account balance &gt; 12000.
+    SELECT branch_name
+    FROM (
+    SELECT branch_name, AVG(balance) AS avg_balance
+    FROM account
+    GROUP BY branch_name
+    ) AS branch_avg
+    WHERE avg_balance > 12000;
+
+11. Calculate total loan amount given by bank.
+    SELECT SUM(amount) AS total_loan_amount
+    FROM loan;
+
+
+
+
+
+
