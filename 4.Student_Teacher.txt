@@ -1,0 +1,267 @@
+test> use ass4;
+switched to db ass4
+
+
+ass4> db.Teachers.insertMany([ { Tname:"SSS", dno:4, dname:"CS", experience:13, salary:35000, date_of_joining:"23.6.2020" }, { Tname:"VK", dno:5, dname:"IT", experience:10, salary:25000, date_of_joining:"12.5.2018" }, { Tname:"JB", dno:6, dname:"ENTC", experience:2, salary:9000, date_of_joining:"22.4.2022" }]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("6541e9dd819250d3db99a8c3"),
+    '1': ObjectId("6541e9dd819250d3db99a8c4"),
+    '2': ObjectId("6541e9dd819250d3db99a8c5")
+  }
+}
+
+ass4> db.Teachers.insertMany([ { Tname:"XYZ", dno:5, dname:"IT", experience:11, salary:15000, date_of_joining:"23.6.2015" }, { Tname:"PQR", dno:4, dname:"CS", experience:8, salary:5000, date_of_joining:"7.9.2012"}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("6541ea52819250d3db99a8c6"),
+    '1': ObjectId("6541ea52819250d3db99a8c7")
+  }
+}
+
+ass4> db.Teachers.find();
+
+
+
+ass4> db.Students.insertMany([ { Sname: "ABCD", rollno: 5, class: 9 }, { Sname: "PQRS", rollno: 2, class: 10 }, { Sname: "Rahul", rollno: 12, class: 9 }]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("6541eaf1819250d3db99a8c8"),
+    '1': ObjectId("6541eaf1819250d3db99a8c9"),
+    '2': ObjectId("6541eaf1819250d3db99a8ca")
+  }
+}
+
+
+ass4> db.Teachers.find().sort({Tname:1});
+[
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c5"),
+    Tname: 'JB',
+    dno: 6,
+    dname: 'ENTC',
+    experience: 2,
+    salary: 9000,
+    date_of_joining: '22.4.2022'
+  },
+  {
+    _id: ObjectId("6541ea52819250d3db99a8c7"),
+    Tname: 'PQR',
+    dno: 4,
+    dname: 'CS',
+    experience: 8,
+    salary: 5000,
+    date_of_joining: '7.9.2012'
+  },
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c3"),
+    Tname: 'SSS',
+    dno: 4,
+    dname: 'CS',
+    experience: 13,
+    salary: 35000,
+    date_of_joining: '23.6.2020'
+  },
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c4"),
+    Tname: 'VK',
+    dno: 5,
+    dname: 'IT',
+    experience: 10,
+    salary: 25000,
+    date_of_joining: '12.5.2018'
+  },
+  {
+    _id: ObjectId("6541ea52819250d3db99a8c6"),
+    Tname: 'XYZ',
+    dno: 5,
+    dname: 'IT',
+    experience: 11,
+    salary: 15000,
+    date_of_joining: '23.6.2015'
+  }
+]
+ass4> db.Teachers.find({ dname:"CS" });
+[
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c3"),
+    Tname: 'SSS',
+    dno: 4,
+    dname: 'CS',
+    experience: 13,
+    salary: 35000,
+    date_of_joining: '23.6.2020'
+  },
+  {
+    _id: ObjectId("6541ea52819250d3db99a8c7"),
+    Tname: 'PQR',
+    dno: 4,
+    dname: 'CS',
+    experience: 8,
+    salary: 5000,
+    date_of_joining: '7.9.2012'
+  }
+]
+ass4> db.Teachers.find({ dname:{$in: ["CS","IT","ENTC"] }});
+[
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c3"),
+    Tname: 'SSS',
+    dno: 4,
+    dname: 'CS',
+    experience: 13,
+    salary: 35000,
+    date_of_joining: '23.6.2020'
+  },
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c4"),
+    Tname: 'VK',
+    dno: 5,
+    dname: 'IT',
+    experience: 10,
+    salary: 25000,
+    date_of_joining: '12.5.2018'
+  },
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c5"),
+    Tname: 'JB',
+    dno: 6,
+    dname: 'ENTC',
+    experience: 2,
+    salary: 9000,
+    date_of_joining: '22.4.2022'
+  },
+  {
+    _id: ObjectId("6541ea52819250d3db99a8c6"),
+    Tname: 'XYZ',
+    dno: 5,
+    dname: 'IT',
+    experience: 11,
+    salary: 15000,
+    date_of_joining: '23.6.2015'
+  },
+  {
+    _id: ObjectId("6541ea52819250d3db99a8c7"),
+    Tname: 'PQR',
+    dno: 4,
+    dname: 'CS',
+    experience: 8,
+    salary: 5000,
+    date_of_joining: '7.9.2012'
+  }
+]
+
+ass4> db.Teachers.find({ dname:{$in:["CS","IT","ENTC"]},
+... salary:{ $gte:10000}
+... });
+[
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c3"),
+    Tname: 'SSS',
+    dno: 4,
+    dname: 'CS',
+    experience: 13,
+    salary: 35000,
+    date_of_joining: '23.6.2020'
+  },
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c4"),
+    Tname: 'VK',
+    dno: 5,
+    dname: 'IT',
+    experience: 10,
+    salary: 25000,
+    date_of_joining: '12.5.2018'
+  },
+  {
+    _id: ObjectId("6541ea52819250d3db99a8c6"),
+    Tname: 'XYZ',
+    dno: 5,
+    dname: 'IT',
+    experience: 11,
+    salary: 15000,
+    date_of_joining: '23.6.2015'
+  }
+]
+
+ass4> db.Students.find({ $or:[{Sname:"PQRS"}, {rollno:2}]});
+[
+  {
+    _id: ObjectId("6541eaf1819250d3db99a8c9"),
+    Sname: 'Bedse',
+    rollno: 2,
+    class: 10
+  }
+]
+ass4> db.Teachers.update(
+... {Tname:"Praveen"},
+... {$set:{experience:10}},
+... {upsert:true}
+... );
+DeprecationWarning: Collection.update() is deprecated. Use updateOne, updateMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedId: ObjectId("6541ee2d61aa30520ac90ff3"),
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 1
+}
+
+ass4> db.Teachers.update(
+... {dname:"IT"},
+... {$set:{dname:"CS"}},
+... {multi:true});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
+
+
+
+
+ass4> db.Teachers.find({}, {Tname:1},{experience:1});
+[
+  { _id: ObjectId("6541e9dd819250d3db99a8c3"), Tname: 'SSS' },
+  { _id: ObjectId("6541e9dd819250d3db99a8c4"), Tname: 'VK' },
+  { _id: ObjectId("6541e9dd819250d3db99a8c5"), Tname: 'JB' },
+  { _id: ObjectId("6541ea52819250d3db99a8c6"), Tname: 'XYZ' },
+  { _id: ObjectId("6541ea52819250d3db99a8c7"), Tname: 'PQR' },
+  { _id: ObjectId("6541ee2d61aa30520ac90ff3"), Tname: 'Praveen' }
+]
+ass4> db.Teachers.remove({dname:"IT"});
+DeprecationWarning: Collection.remove() is deprecated. Use deleteOne, deleteMany, findOneAndDelete, or bulkWrite.
+{ acknowledged: true, deletedCount: 0 }
+
+ass4> db.Teachers.find().sort({ Tname:1 }).limit(3).pretty();
+[
+  {
+    _id: ObjectId("6541e9dd819250d3db99a8c5"),
+    Tname: 'JB',
+    dno: 6,
+    dname: 'ENTC',
+    experience: 2,
+    salary: 9000,
+    date_of_joining: '22.4.2022'
+  },
+  {
+    _id: ObjectId("6541ea52819250d3db99a8c7"),
+    Tname: 'PQR',
+    dno: 4,
+    dname: 'CS',
+    experience: 8,
+    salary: 5000,
+    date_of_joining: '7.9.2012'
+  },
+  {
+    _id: ObjectId("6541ee2d61aa30520ac90ff3"),
+    Tname: 'Praveen',
+    experience: 10
+  }
+]
+ass4>
