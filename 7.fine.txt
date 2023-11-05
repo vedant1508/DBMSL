@@ -1,0 +1,61 @@
+mysql> create database ps7;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use ps7;
+Database changed
+
+
+mysql> create table borrower(rollno int primary key,
+    -> date_of_issue date,
+    -> name_of_book varchar(100),
+    -> status varchar(10));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table fine(rollno int,Date date,amt decimal(10,2));
+Query OK, 0 rows affected (0.04 sec)
+
+
+mysql> insert into borrower values
+    -> (1,"2023-7-11","DBMS","I"),
+    -> (2,"2023-9-15","AI","I"),
+    -> (3,"2023-10-30","CN","I"),
+    -> (4,"2023-10-01","HCI","I");
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+
+mysql> delimiter //
+mysql> create procedure calfine2(IN rno int,IN bookName varchar(100))
+    -> begin
+    -> declare dateofIssue date;
+    -> declare stat varchar(10);
+    -> declare days_late int;
+    -> declare fine_amt decimal(10,2);
+    -> declare exit handler for SQLEXCEPTION select "Record not found";
+    -> select date_of_issue,status into dateofIssue,stat from borrower where rollno=rno and name_of_book=bookName;
+    -> set days_late=DATEDIFF(CURDATE(),dateofIssue);
+    -> IF days_late > 30 then
+    -> set fine_amt=days_late*50;
+    -> else
+    -> set fine_amt=days_late*5;
+    -> end if;
+    -> insert into fine values(rno,dateofIssue,fine_amt);
+    -> update borrower
+    -> set status='R'
+    -> where rollno=rno and name_of_book=bookName;
+    -> end //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> delimiter ;
+
+mysql> call calfine2(1,"DBMS");
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from fine;
++--------+------------+---------+
+| rollno | Date       | amt     |
++--------+------------+---------+
+|      1 | 2023-07-11 | 5850.00 |
++--------+------------+---------+
+1 row in set (0.00 sec)
+

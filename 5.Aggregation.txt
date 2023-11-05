@@ -1,0 +1,203 @@
+test> use ass5;
+switched to db ass5
+ass5> db.Books.insertMany([
+... {
+... title:"Power of Subconscious Mind",
+... author:"Joseph",
+... genre:"Sci-Fi",
+... price:150,
+... publish_date:"23.1.2021"
+... },
+... {
+... title:"Rich Dad Poor Dad",
+... author:"Robert",
+... genre:"Non Fiction",
+... price:500,
+... publish_date:"12.3.2012",
+... },
+... {
+... title:"The Hundred",
+... author:"Sachin",
+... price:1000,
+... publish_date:"06.8.2023"
+... },
+... {
+... title:"Playing it my way",
+... author:"Sachin",
+... genre:"Fiction",
+... price:1200,
+... publish_date:"6.4.2020"
+... }]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("6543ae79424ae9e158bda111"),
+    '1': ObjectId("6543ae79424ae9e158bda112"),
+    '2': ObjectId("6543ae79424ae9e158bda113"),
+    '3': ObjectId("6543ae79424ae9e158bda114")
+  }
+}
+
+
+ass5> db.Books.insertMany([ { title:"ABD", author:"ab de Villiers", genre:"Mystery",
+... price:1500,
+... publish_date:"1.3.2015"}]);
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("6543af1c424ae9e158bda115") }
+}
+
+
+
+ass5> db.Books.aggregate([ { $group:{_id:null, avgprice:{$avg:"$price" }}}]);
+[ { _id: null, avgprice: 870 } ]
+
+
+
+ass5> db.Books.insertMany([{ title: "RDBMS", author: "John", genre: "Fiction", price: 2000, publish_date: "1.3.2015" }]);
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("6543b0e8424ae9e158bda116") }
+}
+
+ass5> db.Books.aggregate([{$group:{_id:"$genre",mostexpensiveBook:{$max:"$price"}}}]);
+[
+  { _id: 'Fiction', mostexpensiveBook: 2000 },
+  { _id: 'Mystery', mostexpensiveBook: 1500 },
+  { _id: null, mostexpensiveBook: 1000 },
+  { _id: 'Sci-Fi', mostexpensiveBook: 150 },
+  { _id: 'Non Fiction', mostexpensiveBook: 500 }
+]
+
+
+ass5> db.Books.aggregate([{ $group:{_id:"$genre", BookCount:{$sum:1} }}]);
+[
+  { _id: 'Fiction', BookCount: 2 },
+  { _id: 'Mystery', BookCount: 1 },
+  { _id: null, BookCount: 1 },
+  { _id: 'Sci-Fi', BookCount: 1 },
+  { _id: 'Non Fiction', BookCount: 1 }
+]
+
+
+ass5> db.Books.aggregate([{ $group:{_id:"$author",maxwrittenBooks:{$sum:1}}}
+]);
+[
+  { _id: 'Robert', maxwrittenBooks: 1 },
+  { _id: 'ab de Villiers', maxwrittenBooks: 1 },
+  { _id: 'John', maxwrittenBooks: 1 },
+  { _id: 'Joseph', maxwrittenBooks: 1 },
+  { _id: 'Sachin', maxwrittenBooks: 2 }
+]
+
+
+ass5> db.Books.aggregate([ { $sort:{publish_date:-1}}]);
+[
+  {
+    _id: ObjectId("6543ae79424ae9e158bda114"),
+    title: 'Playing it my way',
+    author: 'Sachin',
+    genre: 'Fiction',
+    price: 1200,
+    publish_date: '6.4.2020'
+  },
+  {
+    _id: ObjectId("6543ae79424ae9e158bda111"),
+    title: 'Power of Subconscious Mind',
+    author: 'Joseph',
+    genre: 'Sci-Fi',
+    price: 150,
+    publish_date: '23.1.2021'
+  },
+  {
+    _id: ObjectId("6543ae79424ae9e158bda112"),
+    title: 'Rich Dad Poor Dad',
+    author: 'Robert',
+    genre: 'Non Fiction',
+    price: 500,
+    publish_date: '12.3.2012'
+  },
+  {
+    _id: ObjectId("6543af1c424ae9e158bda115"),
+    title: 'ABD',
+    author: 'ab de Villiers',
+    genre: 'Mystery',
+    price: 1500,
+    publish_date: '1.3.2015'
+  },
+  {
+    _id: ObjectId("6543b0e8424ae9e158bda116"),
+    title: 'RDBMS',
+    author: 'John',
+    genre: 'Fiction',
+    price: 2000,
+    publish_date: '1.3.2015'
+  },
+  {
+    _id: ObjectId("6543ae79424ae9e158bda113"),
+    title: 'The Hundred',
+    author: 'Sachin',
+    price: 1000,
+    publish_date: '06.8.2023'
+  }
+]
+
+
+ass5> db.Books.aggregate([{$sort:{price:1}}]);
+[
+  {
+    _id: ObjectId("6543ae79424ae9e158bda111"),
+    title: 'Power of Subconscious Mind',
+    author: 'Joseph',
+    genre: 'Sci-Fi',
+    price: 150,
+    publish_date: '23.1.2021'
+  },
+  {
+    _id: ObjectId("6543ae79424ae9e158bda112"),
+    title: 'Rich Dad Poor Dad',
+    author: 'Robert',
+    genre: 'Non Fiction',
+    price: 500,
+    publish_date: '12.3.2012'
+  },
+  {
+    _id: ObjectId("6543ae79424ae9e158bda113"),
+    title: 'The Hundred',
+    author: 'Sachin',
+    price: 1000,
+    publish_date: '06.8.2023'
+  },
+  {
+    _id: ObjectId("6543ae79424ae9e158bda114"),
+    title: 'Playing it my way',
+    author: 'Sachin',
+    genre: 'Fiction',
+    price: 1200,
+    publish_date: '6.4.2020'
+  },
+  {
+    _id: ObjectId("6543af1c424ae9e158bda115"),
+    title: 'ABD',
+    author: 'ab de Villiers',
+    genre: 'Mystery',
+    price: 1500,
+    publish_date: '1.3.2015'
+  },
+  {
+    _id: ObjectId("6543b0e8424ae9e158bda116"),
+    title: 'RDBMS',
+    author: 'John',
+    genre: 'Fiction',
+    price: 2000,
+    publish_date: '1.3.2015'
+  }
+]
+ass5> db.Books.createIndex({title:1});
+title_1
+ass5> db.Books.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { title: 1 }, name: 'title_1' }
+]
+ass5>

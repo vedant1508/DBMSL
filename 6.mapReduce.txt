@@ -1,0 +1,39 @@
+
+test> use ass6;
+switched to db ass6
+
+ass6> db.customer.insertMany([ { cid:1, cname:"ABC", amount:2000, product_name:"Iphone Charger" },
+ { cid:2, cname:"XYZ", amount:40000, product_name:"Iphone 13" },
+ { cid:3, cname:"PQR", amount:50000, product_name:"Samsung S23 FE" },
+ { cid:4,
+... cname:"MNO",
+... amount:55000,
+... product_name:"Iphone 14"
+... }]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("6543d71d6ede29a502c2f6ad"),
+    '1': ObjectId("6543d71d6ede29a502c2f6ae"),
+    '2': ObjectId("6543d71d6ede29a502c2f6af"),
+    '3': ObjectId("6543d71d6ede29a502c2f6b0")
+  }
+}
+ass6> var Mapfunction= function(){ emit(this.cid,this.amount) }
+
+ass6> var Reducefunction = function(key,values){return Array.sum(values)}
+
+ass6> db.customer.mapReduce(Mapfunction,Reducefunction,{ out:"Customer_Summary" });
+
+DeprecationWarning: Collection.mapReduce() is deprecated. Use an aggregation instead.
+See https://docs.mongodb.com/manual/core/map-reduce for details.
+{ result: 'Customer_Summary', ok: 1 }
+
+ass6> db.Customer_Summary.find();
+[
+  { _id: 1, value: 2000 },
+  { _id: 3, value: 50000 },
+  { _id: 4, value: 55000 },
+  { _id: 2, value: 40000 }
+]
+ass6>

@@ -1,0 +1,46 @@
+mysql> create database ps2;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use ps2;
+Database changed
+
+mysql> create table stud_marks(name varchar(50) primary key,total_marks int);
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> insert into stud_marks values("ABC",950),("PQR",1025),("XYZ",1350),("MNO",875),("GFG",750);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+
+
+mysql> create table result(roll int primary key,name varchar(50),class varchar(50),foreign key (name) references stud_marks(name));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> delimiter //
+mysql> create procedure grade1(IN p_name varchar(50))
+    -> begin
+    -> declare p_total int;
+    -> declare p_class varchar (50);
+    -> select total_marks into p_total from stud_marks where name=p_name;
+    -> IF p_total >=990 and p_total<=1500 then
+    -> set p_class='Distinction';
+    -> elseif p_total>=900 and p_total<=989 then
+    -> set p_class='First Class';
+    -> elseif p_total>=825 and p_total<=899 then
+    -> set p_class='Higher Second Class';
+    -> else
+    -> set p_class='Fail';
+    -> end if;
+    -> select p_class as class;
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+
+mysql> call grade1("ABC");
++-------------+
+| class       |
++-------------+
+| First Class |
++-------------+
